@@ -4,6 +4,7 @@
 * Derby
 * H2
 * hsql
+* Sqlite
 
 ## Referer
 * [Does hibernate fully support sqlite ?](https://stackoverflow.com/questions/17587753/does-hibernate-fully-support-sqlite)
