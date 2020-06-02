@@ -1,5 +1,6 @@
-package xxx.yyy.zzz.config.h2;
+package xxx.yyy.zzz.config.sqlite;
 
+import ch.qos.logback.core.db.dialect.SQLiteDialect;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.context.annotation.Bean;
@@ -15,47 +16,47 @@ import javax.sql.DataSource;
 import java.util.HashMap;
 
 @Configuration
-@EnableJpaRepositories(basePackages = "xxx.yyy.zzz.components.h2",
-        entityManagerFactoryRef = "getH2LocalContainerEntityManagerFactoryBean",
-        transactionManagerRef = "getH2PlatformTransactionManager"
+@EnableJpaRepositories(
+        basePackages = "xxx.yyy.zzz.components.sqlite",
+        entityManagerFactoryRef = "getSqliteLocalContainerEntityManagerFactoryBean",
+        transactionManagerRef = "getSqlitePlatformTransactionManager"
 )
-public class H2Config {
+public class SQLiteConfig {
 
     @Bean
-    public DataSource getH2DataSource() {
+    public DataSource getSqliteDataSource() {
         HikariConfig hikariConfig = new HikariConfig();
         hikariConfig.setUsername("root");
         hikariConfig.setPassword("root");
-        hikariConfig.setJdbcUrl("jdbc:h2:file:./db/h2db/db;MV_STORE=false");
+        hikariConfig.setJdbcUrl("jdbc:sqlite:./db/sqlite.db");
+        //hikariConfig.setJdbcUrl("jdbc:sqlite:memory:myDb?cache=shared&database=main");
         return new HikariDataSource(hikariConfig);
     }
 
     @Bean
-    public JdbcTemplate getH2JdbcTemplate() {
-        return new JdbcTemplate(getH2DataSource());
+    public JdbcTemplate getSqliteJdbcTemplate() {
+        return new JdbcTemplate(getSqliteDataSource());
     }
 
-
     @Bean
-    public LocalContainerEntityManagerFactoryBean getH2LocalContainerEntityManagerFactoryBean() {
-        LocalContainerEntityManagerFactoryBean em
-                = new LocalContainerEntityManagerFactoryBean();
-        em.setDataSource(getH2DataSource());
-        em.setPackagesToScan("xxx.yyy.zzz.components.h2");
+    public LocalContainerEntityManagerFactoryBean getSqliteLocalContainerEntityManagerFactoryBean() {
+        LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
+        em.setDataSource(getSqliteDataSource());
+        em.setPackagesToScan("xxx.yyy.zzz.components.sqlite");
         HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         em.setJpaVendorAdapter(vendorAdapter);
 
         HashMap<String, Object> properties = new HashMap<>();
         properties.put("hibernate.hbm2ddl.auto", "create-drop");
-        properties.put("hibernate.dialect", "org.hibernate.dialect.H2Dialect");
+        properties.put("hibernate.dialect", "xxx.yyy.zzz.helper.SQLiteDialect");
         em.setJpaPropertyMap(properties);
         return em;
     }
 
     @Bean
-    public PlatformTransactionManager getH2PlatformTransactionManager() {
+    public PlatformTransactionManager getSqlitePlatformTransactionManager() {
         JpaTransactionManager transactionManager = new JpaTransactionManager();
-        transactionManager.setEntityManagerFactory(getH2LocalContainerEntityManagerFactoryBean().getObject());
+        transactionManager.setEntityManagerFactory(getSqliteLocalContainerEntityManagerFactoryBean().getObject());
         return transactionManager;
     }
 }

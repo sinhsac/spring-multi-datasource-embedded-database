@@ -10,6 +10,22 @@ sourceCompatibility = '1.8'
 
 repositories {
 	mavenCentral()
+
+	jcenter{
+		url 'http://oss.jfrog.org/artifactory/oss-snapshot-local'
+	}
+	maven {
+		url "https://repo.spring.io/plugins-release/"
+	}
+	maven {
+		url "http://maven.restlet.org/"
+	}
+	maven {
+		url "https://oss.sonatype.org/content/repositories/snapshots/"
+	}
+	maven {
+		url "https://jitpack.io"
+	}
 }
 
 ext {
@@ -33,7 +49,8 @@ dependencies {
 	implementation 'com.h2database:h2'
 	implementation 'org.apache.derby:derby'
 	implementation 'org.hsqldb:hsqldb'
-
+	implementation 'org.xerial:sqlite-jdbc:3.31.1'
+	//implementation 'com.github.gwenn:sqlite-dialect:master'
 
 
 	implementation "mysql:mysql-connector-java:8.0.18"

@@ -1,4 +1,4 @@
-package xxx.yyy.zzz.config.h2;
+package xxx.yyy.zzz.config.hsqldb;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
@@ -15,47 +15,47 @@ import javax.sql.DataSource;
 import java.util.HashMap;
 
 @Configuration
-@EnableJpaRepositories(basePackages = "xxx.yyy.zzz.components.h2",
-        entityManagerFactoryRef = "getH2LocalContainerEntityManagerFactoryBean",
-        transactionManagerRef = "getH2PlatformTransactionManager"
+@EnableJpaRepositories(
+        basePackages = "xxx.yyy.zzz.components.hsql",
+        entityManagerFactoryRef = "getHSQLLocalContainerEntityManagerFactoryBean",
+        transactionManagerRef = "getHSQLPlatformTransactionManager"
 )
-public class H2Config {
+public class HsqlConfig {
 
     @Bean
-    public DataSource getH2DataSource() {
+    public DataSource getHSQLDataSource() {
         HikariConfig hikariConfig = new HikariConfig();
         hikariConfig.setUsername("root");
         hikariConfig.setPassword("root");
-        hikariConfig.setJdbcUrl("jdbc:h2:file:./db/h2db/db;MV_STORE=false");
+        hikariConfig.setJdbcUrl("jdbc:hsqldb:file:db/hsqldb.db/foo-test");
         return new HikariDataSource(hikariConfig);
     }
+    //hsqldb.default_table_type=cached
 
     @Bean
-    public JdbcTemplate getH2JdbcTemplate() {
-        return new JdbcTemplate(getH2DataSource());
+    public JdbcTemplate getHSQLJdbcTemplate() {
+        return new JdbcTemplate(getHSQLDataSource());
     }
 
-
     @Bean
-    public LocalContainerEntityManagerFactoryBean getH2LocalContainerEntityManagerFactoryBean() {
-        LocalContainerEntityManagerFactoryBean em
-                = new LocalContainerEntityManagerFactoryBean();
-        em.setDataSource(getH2DataSource());
-        em.setPackagesToScan("xxx.yyy.zzz.components.h2");
+    public LocalContainerEntityManagerFactoryBean getHSQLLocalContainerEntityManagerFactoryBean() {
+        LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
+        em.setDataSource(getHSQLDataSource());
+        em.setPackagesToScan("xxx.yyy.zzz.components.hsql");
         HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         em.setJpaVendorAdapter(vendorAdapter);
 
         HashMap<String, Object> properties = new HashMap<>();
         properties.put("hibernate.hbm2ddl.auto", "create-drop");
-        properties.put("hibernate.dialect", "org.hibernate.dialect.H2Dialect");
+        properties.put("hibernate.dialect", "org.hibernate.dialect.HSQLDialect");
         em.setJpaPropertyMap(properties);
         return em;
     }
 
     @Bean
-    public PlatformTransactionManager getH2PlatformTransactionManager() {
+    public PlatformTransactionManager getHSQLPlatformTransactionManager() {
         JpaTransactionManager transactionManager = new JpaTransactionManager();
-        transactionManager.setEntityManagerFactory(getH2LocalContainerEntityManagerFactoryBean().getObject());
+        transactionManager.setEntityManagerFactory(getHSQLLocalContainerEntityManagerFactoryBean().getObject());
         return transactionManager;
     }
 }

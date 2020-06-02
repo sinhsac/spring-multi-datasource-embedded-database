@@ -2,6 +2,7 @@ package xxx.yyy.zzz.config.mysql;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import javax.sql.DataSource;
@@ -9,8 +10,8 @@ import javax.sql.DataSource;
 @Configuration
 public class MySqlConfig {
 
-   // @Bean("mysqlDataSource")
-    public DataSource getDataSource() {
+    @Bean
+    public DataSource getMySQLDataSource() {
         HikariConfig hikariConfig = new HikariConfig();
         hikariConfig.setUsername("root");
         hikariConfig.setPassword("root");

@@ -1,10 +1,21 @@
 
 
-
 spring:
+  datasource:
+    initialization-mode: never
+  main:
+    allow-bean-definition-overriding: true
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: create-drop
+    generate-ddl: on
   h2:
     console:
       enabled: true
+
+logging:
+  level:
+    web: DEBUG
+    com:
+      zaxxer:
+        hikari: DEBUG
