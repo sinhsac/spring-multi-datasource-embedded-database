@@ -3,6 +3,7 @@ package xxx.yyy.zzz.config.sqlite;
 import ch.qos.logback.core.db.dialect.SQLiteDialect;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
@@ -11,6 +12,7 @@ import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.util.StringUtils;
 
 import javax.sql.DataSource;
 import java.util.HashMap;
@@ -22,6 +24,9 @@ import java.util.HashMap;
         transactionManagerRef = "getSqlitePlatformTransactionManager"
 )
 public class SQLiteConfig {
+
+    @Value("${sqlite.hibernate.hbm2ddl.auto:}")
+    String hbm2ddlAuto;
 
     @Bean
     public DataSource getSqliteDataSource() {
@@ -47,7 +52,9 @@ public class SQLiteConfig {
         em.setJpaVendorAdapter(vendorAdapter);
 
         HashMap<String, Object> properties = new HashMap<>();
-        properties.put("hibernate.hbm2ddl.auto", "create-drop");
+        if (!StringUtils.isEmpty(hbm2ddlAuto)) {
+            properties.put("hibernate.hbm2ddl.auto", hbm2ddlAuto);
+        }
         properties.put("hibernate.dialect", "xxx.yyy.zzz.helper.SQLiteDialect");
         em.setJpaPropertyMap(properties);
         return em;

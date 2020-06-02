@@ -2,6 +2,7 @@ package xxx.yyy.zzz.config.h2;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
@@ -10,6 +11,7 @@ import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.util.StringUtils;
 
 import javax.sql.DataSource;
 import java.util.HashMap;
@@ -20,6 +22,9 @@ import java.util.HashMap;
         transactionManagerRef = "getH2PlatformTransactionManager"
 )
 public class H2Config {
+
+    @Value("${h2.hibernate.hbm2ddl.auto:}")
+    String hbm2ddlAuto;
 
     @Bean
     public DataSource getH2DataSource() {
@@ -46,7 +51,9 @@ public class H2Config {
         em.setJpaVendorAdapter(vendorAdapter);
 
         HashMap<String, Object> properties = new HashMap<>();
-        properties.put("hibernate.hbm2ddl.auto", "create-drop");
+        if (!StringUtils.isEmpty(hbm2ddlAuto)) {
+            properties.put("hibernate.hbm2ddl.auto", hbm2ddlAuto);
+        }
         properties.put("hibernate.dialect", "org.hibernate.dialect.H2Dialect");
         em.setJpaPropertyMap(properties);
         return em;

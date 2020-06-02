@@ -5,17 +5,33 @@ spring:
     initialization-mode: never
   main:
     allow-bean-definition-overriding: true
-  jpa:
-    hibernate:
-      ddl-auto: create-drop
-    generate-ddl: on
   h2:
     console:
       enabled: true
 
+
+derby:
+  hibernate:
+    hbm2ddl:
+      auto: ""
+h2:
+  hibernate:
+    hbm2ddl:
+      auto: ""
+hsql:
+  hibernate:
+    hbm2ddl:
+      auto: ""
+sqlite:
+  hibernate:
+    hbm2ddl:
+      auto: ""
+
+
+
 logging:
   level:
     web: DEBUG
-    com:
-      zaxxer:
-        hikari: DEBUG
+    #com:
+    #  zaxxer:
+    #    hikari: DEBUG

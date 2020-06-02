@@ -3,6 +3,7 @@ package xxx.yyy.zzz.config.derby;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -12,6 +13,7 @@ import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
+import org.springframework.util.StringUtils;
 
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
@@ -20,6 +22,9 @@ import java.util.HashMap;
 @Configuration
 @EnableJpaRepositories(basePackages = "xxx.yyy.zzz.components.derby", entityManagerFactoryRef = "getDerbyEntityManagerFactory", transactionManagerRef = "getDerbyTransactionManager")
 public class DerbyConfig {
+
+    @Value("${derby.hibernate.hbm2ddl.auto:}")
+    String hbm2ddlAuto;
 
     @Bean
     @Primary
@@ -46,7 +51,9 @@ public class DerbyConfig {
         em.setJpaVendorAdapter(vendorAdapter);
 
         HashMap<String, Object> properties = new HashMap<>();
-        properties.put("hibernate.hbm2ddl.auto", "create-drop");
+        if (!StringUtils.isEmpty(hbm2ddlAuto)) {
+            properties.put("hibernate.hbm2ddl.auto", hbm2ddlAuto);
+        }
         properties.put("hibernate.dialect", "org.hibernate.dialect.DerbyTenSevenDialect");
         em.setJpaPropertyMap(properties);
         return em;
